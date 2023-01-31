@@ -1,0 +1,39 @@
+class partisan extends physical{
+	constructor(layer,x,y,type,width,height){
+		super(layer,x,y,type,width,height)
+		this.trigger={physics:{resistance:true,gravity:true}}
+		this.timers=[0,0]
+		this.squish=[false,false,false,false]
+		this.size=1
+		this.dead=false
+	}
+	update(){
+		super.update()
+		this.position.x=constrain(this.position.x,0,game.edge.x)
+		if(game.level==2&&this.position.y>game.edge.y){
+			this.dead=true
+		}else{
+			this.position.y=min(this.position.y,game.edge.y)
+		}
+		this.anim.direction=constrain(this.anim.direction,-1,1)
+        this.anim.rate+=this.velocity.x
+		if(this.dead){
+			this.status=1
+		}
+		if(this.trigger.physics.resistance){
+			this.velocity.x*=(1-physics.resistance)
+		}
+		if(this.trigger.physics.gravity){
+			this.velocity.y+=physics.gravity
+		}
+		if(this.squish[0]&&this.squish[1]||this.squish[2]&&this.squish[3]){
+			this.dead=true
+		}
+		this.squish=[false,false,false,false]
+		for(let a=0,la=this.timers.length;a<la;a++){
+			if(this.timers[a]>0){
+				this.timers[a]--
+			}
+		}
+	}
+}

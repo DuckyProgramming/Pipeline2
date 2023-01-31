@@ -1,0 +1,21 @@
+class cloud extends entity{
+    constructor(layer){
+        super(layer,random(-80,680),random(-80,630),0,0)
+        this.speed=random(1,1.5)
+    }
+    display(){
+        this.layer.fill(255,this.fade)
+        this.layer.stroke(245,this.fade)
+        this.layer.strokeWeight(10)
+        this.layer.ellipse(this.position.x,this.position.y,160,60)
+    }
+    update(){
+        this.position.x+=this.speed
+        if(this.position.x>680){
+            this.position.x-=760
+            this.position.y-random(-80,630)
+            this.speed=random(1,1.5)
+        }
+        super.update()
+    }
+}
