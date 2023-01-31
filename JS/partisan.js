@@ -15,7 +15,6 @@ class partisan extends physical{
 		}else{
 			this.position.y=min(this.position.y,game.edge.y)
 		}
-		this.anim.direction=constrain(this.anim.direction,-1,1)
         this.anim.rate+=this.velocity.x
 		if(this.dead){
 			this.status=1

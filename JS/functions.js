@@ -6,19 +6,6 @@ function setupLayer(layer){
 	layer.noStroke()
 }
 function displayMenu(layer){
-	layer.background(20,0,20)
-	layer.fill(120)
-	layer.noStroke()
-	layer.rect(layer.width/2,layer.height/2,200,50,10)
-	layer.rect(layer.width/2,layer.height*5/8,200,50,10)
-	layer.rect(layer.width/2,layer.height*3/4,200,50,10)
-	layer.fill(240)
-	layer.textSize(60)
-	layer.text('Duck Platformer\nCollection',layer.width/2,layer.height/4)
-	layer.textSize(20)
-	layer.text('The Duck Farm',layer.width/2,layer.height/2)
-	layer.text('Duckymorph',layer.width/2,layer.height*5/8)
-	layer.text('Ducky'+"'"+'s Caves',layer.width/2,layer.height*3/4)
 }
 function displayBorder(layer,edge){
 	layer.noStroke()
@@ -29,8 +16,9 @@ function displayBorder(layer,edge){
 	layer.rect(layer.width+edge.x,edge.y/2,layer.width*2,edge.y+layer.height*2)
 	for(let a=0;a<5;a++){
 		layer.fill(0,0.85-a*0.15)
-		layer.rect(2+a*4,edge.y/2-a*2,4,edge.y-a*4)
-		layer.rect(edge.x-2-a*4,edge.y/2-a*2,4,edge.y-a*4)
+		layer.rect(2+a*4,edge.y/2,4,edge.y-a*8)
+		layer.rect(edge.x-2-a*4,edge.y/2,4,edge.y-a*8)
+		layer.rect(edge.x/2,2+a*4,edge.x-8-a*8,4)
 		layer.rect(edge.x/2,edge.y-2-a*4,edge.x-8-a*8,4)
 	}
 }
@@ -57,6 +45,16 @@ function displayTransition(layer,transition){
 	else if(transition.anim>0){
 		transition.anim=round(transition.anim*10-1)/10
 	}
+}
+function toggle(base){
+	if(base){
+		return false
+	}else{
+		return true
+	}
+}
+function upColor(color,value,key){
+	return [color[0]+value*key[0],color[1]+value*key[1],color[2]+value*key[2]]
 }
 function regTriangle(layer,x,y,radius,direction){
 	layer.triangle(x+sin(direction)*radius,y+cos(direction)*radius,x+sin(direction+120)*radius,y+cos(direction+120)*radius,x+sin(direction+240)*radius,y+cos(direction+240)*radius);
@@ -162,22 +160,22 @@ function resetWorld(){
 	entities.particles=[]
 }
 function generateWorld(layer,level){
-	if(level.length>0&&level[0].length>0){
-		game.edge.x=level[0].length*game.tileSize
-		game.edge.y=level.length*game.tileSize
+	if(level.map.length>0&&level.map[0].length>0){
+		game.edge.x=level.map[0].length*game.tileSize
+		game.edge.y=level.map.length*game.tileSize
 		stage.focus.x=game.edge.x/2
 		stage.focus.y=game.edge.y/2
-		for(let a=0,la=level.length;a<la;a++){
-			for(let b=0,lb=level[a].length;b<lb;b++){
-				if(level[a][b]>=100&&floor(level[a][b]/100)!=4&&floor(level[a][b]/100)!=31&&floor(level[a][b]/100)!=56){
-					entities.walls.push(new wall(layer,b*game.tileSize+floor((level[a][b]%100)/10)*game.tileSize/2+game.tileSize/2,a*game.tileSize+(level[a][b]%10)*game.tileSize/2+game.tileSize/2,floor(level[a][b]/100),floor((level[a][b]%100)/10)*game.tileSize+game.tileSize,(level[a][b]%10)*game.tileSize+game.tileSize))
-				}else if(level[a][b]<-1){
-					entities.enemies.push(new enemy(layer,b*game.tileSize+game.tileSize/2,a*game.tileSize+game.tileSize/2,-level[a][b]-1))
-				}else if(level[a][b]==-1){
-					if(transition.dead){
-						entities.players.push(new player(layer,game.check.x,game.check.y,game.check.type))
+		for(let a=0,la=level.map.length;a<la;a++){
+			for(let b=0,lb=level.map[a].length;b<lb;b++){
+				if(level.map[a][b]>=100&&floor(level.map[a][b]/100)!=4&&floor(level.map[a][b]/100)!=31&&floor(level.map[a][b]/100)!=56){
+					entities.walls.push(new wall(layer,b*game.tileSize+floor((level.map[a][b]%100)/10)*game.tileSize/2+game.tileSize/2,a*game.tileSize+(level.map[a][b]%10)*game.tileSize/2+game.tileSize/2,floor(level.map[a][b]/100),floor((level.map[a][b]%100)/10)*game.tileSize+game.tileSize,(level.map[a][b]%10)*game.tileSize+game.tileSize))
+				}else if(level.map[a][b]<-1){
+					entities.enemies.push(new enemy(layer,b*game.tileSize+game.tileSize/2,a*game.tileSize+game.tileSize/2,-level.map[a][b]-1))
+				}else if(level.map[a][b]==-1){
+					if(transition.mode==1){
+						entities.players.push(new player(layer,game.check.x,game.check.y,game.check.type,0))
 					}else{
-						entities.players.push(new player(layer,b*game.tileSize+game.tileSize/2,a*game.tileSize+game.tileSize/2,0))
+						entities.players.push(new player(layer,b*game.tileSize+game.tileSize/2,a*game.tileSize+game.tileSize/2,0,0))
 						game.check.x=b*game.tileSize+game.tileSize/2
 						game.check.y=a*game.tileSize+game.tileSize/2
 						game.check.type=0
@@ -185,23 +183,13 @@ function generateWorld(layer,level){
 				}
 			}
 		}
-		for(let a=0,la=level.length;a<la;a++){
-			for(let b=0,lb=level[a].length;b<lb;b++){
-				if(level[a][b]>=100&&(floor(level[a][b]/100)==4||floor(level[a][b]/100)==31||floor(level[a][b]/100)==56)){
-					entities.walls.push(new wall(layer,b*game.tileSize+floor((level[a][b]%100)/10)*game.tileSize/2+game.tileSize/2,a*game.tileSize+(level[a][b]%10)*game.tileSize/2+game.tileSize/2,floor(level[a][b]/100),floor((level[a][b]%100)/10)*game.tileSize+game.tileSize,(level[a][b]%10)*game.tileSize+game.tileSize))
+		for(let a=0,la=level.map.length;a<la;a++){
+			for(let b=0,lb=level.map[a].length;b<lb;b++){
+				if(level.map[a][b]>=100&&(floor(level.map[a][b]/100)==4||floor(level.map[a][b]/100)==31||floor(level.map[a][b]/100)==56)){
+					entities.walls.push(new wall(layer,b*game.tileSize+floor((level.map[a][b]%100)/10)*game.tileSize/2+game.tileSize/2,a*game.tileSize+(level.map[a][b]%10)*game.tileSize/2+game.tileSize/2,floor(level.map[a][b]/100),floor((level.map[a][b]%100)/10)*game.tileSize+game.tileSize,(level.map[a][b]%10)*game.tileSize+game.tileSize))
 				}
 			}
 		}
 	}
-	switch(game.level){
-		case 0: case 2:
-			run={back:[],fore:[entities.walls,entities.enemies,entities.players,entities.particles]}
-		break
-		case 1:
-			for(let a=0;a<10;a++){
-				entities.clouds.push(new cloud(layer))
-			}
-			run={back:[entities.clouds],fore:[entities.walls,entities.enemies,entities.players,entities.particles]}
-		break
-	}
+	run={back:[],fore:[entities.walls,entities.enemies,entities.players,entities.particles]}
 }

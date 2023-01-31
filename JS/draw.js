@@ -8,17 +8,10 @@ function draw(){
 			displayMenu(graphics.main)
 		break
 		case 'level':
-			switch(game.level){
-				case 0:
-					graphics.main.background(0,225,225)
-				break
-				case 1:
-					graphics.main.background(0,150,255)
-				break
-				case 2:
-					graphics.main.image(graphics.backgrounds[0],0,0,600,600)
-				break
-			}
+			graphics.main.image(graphics.backgrounds[0],(-stage.focus.x/2)%1600,(-stage.focus.y/2)%1200,graphics.main.width*2,graphics.main.height*2)
+			graphics.main.image(graphics.backgrounds[0],(-stage.focus.x/2)%1600+1600,(-stage.focus.y/2)%1200,graphics.main.width*2,graphics.main.height*2)
+			graphics.main.image(graphics.backgrounds[0],(-stage.focus.x/2)%1600,(-stage.focus.y/2)%1200+1200,graphics.main.width*2,graphics.main.height*2)
+			graphics.main.image(graphics.backgrounds[0],(-stage.focus.x/2)%1600+1600,(-stage.focus.y/2)%1200+1200,graphics.main.width*2,graphics.main.height*2)
 			for(let a=0,la=run.back.length;a<la;a++){
 				for(let b=0,lb=run.back[a].length;b<lb;b++){
 					run.back[a][b].display()
