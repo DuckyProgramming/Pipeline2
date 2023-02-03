@@ -1,7 +1,7 @@
 class player extends partisan{
     constructor(layer,x,y,type,direction){
-        super(layer,x,y,type,36,60)
-        this.offset={position:{x:0,y:0}}
+        super(layer,x,y,type,24,72)
+        this.offset={position:{x:0,y:36}}
         this.trigger.animate=false
         
         switch(this.type){
@@ -36,8 +36,8 @@ class player extends partisan{
                         {top:{x:3,y:-15},middle:{x:0,y:0}},
                         {top:{x:3,y:-15},middle:{x:0,y:0}}
                     ],arms:[
-                        {top:{x:3.5,y:-24},middle:{x:0,y:0}},
-                        {top:{x:3.5,y:-24},middle:{x:0,y:0}}
+                        {top:{x:3.5,y:-25},middle:{x:0,y:0}},
+                        {top:{x:3.5,y:-25},middle:{x:0,y:0}}
                     ]}
 
                 this.graphics={
@@ -66,8 +66,6 @@ class player extends partisan{
         this.movement={speed:0.4,jump:12}
         
         this.size=1.5
-
-        this.trigger.physics.gravity=false
     }
     calculateParts(){
         switch(this.type){
@@ -97,7 +95,7 @@ class player extends partisan{
         this.calculateParts()
         this.layer.translate(this.position.x+this.offset.position.x,this.position.y+this.offset.position.y)
         this.layer.fill(255)
-            this.layer.rect(0,0,this.width,this.height)
+            this.layer.rect(0,-this.offset.position.y,this.width,this.height)
             this.layer.scale(this.size)
         if(this.fade>0&&this.size>0){
             switch(this.type){
@@ -193,8 +191,8 @@ class player extends partisan{
                 }
                 if(this.animSet.active||this.animSet.loop>0){
                     this.animSet.loop++
-                    if(this.animSet.loop>=20){
-                        this.animSet.loop-=20
+                    if(this.animSet.loop>=30){
+                        this.animSet.loop-=30
                         this.animSet.flip=1-this.animSet.flip
                     }
                 }
@@ -209,6 +207,10 @@ class player extends partisan{
                 }else if(this.anim.direction<-180){
                     this.anim.direction+=360
                 }
+                this.spin.legs[0].top=-90+sin(this.animSet.loop*12)*60
+                this.spin.legs[1].top=90+sin(this.animSet.loop*12)*60
+                this.spin.arms[0].top=-90+sin(this.animSet.loop*12)*30
+                this.spin.arms[1].top=90+sin(this.animSet.loop*12)*30
                 if((inputs.keys[0][2]||inputs.keys[1][2])&&this.timers[0]>0){
                     this.timers[0]=0
                     this.velocity.y=-this.movement.jump
