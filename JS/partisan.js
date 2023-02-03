@@ -2,10 +2,18 @@ class partisan extends physical{
 	constructor(layer,x,y,type,width,height){
 		super(layer,x,y,type,width,height)
 		this.trigger={physics:{resistance:true,gravity:true}}
-		this.timers=[0,0]
+		this.offset={position:{x:0,y:36}}
+        this.timers=[0,0]
 		this.squish=[false,false,false,false]
 		this.size=1
 		this.dead=false
+	}
+	display(){
+		this.layer.translate(this.position.x+this.offset.position.x,this.position.y+this.offset.position.y)
+		this.layer.fill(255)
+		this.layer.noStroke()
+        this.layer.rect(0,-this.offset.position.y,this.width,this.height)
+		this.layer.translate(-this.position.x-this.offset.position.x,-this.position.y-this.offset.position.y)
 	}
 	update(){
 		super.update()

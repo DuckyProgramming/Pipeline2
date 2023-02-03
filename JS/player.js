@@ -1,7 +1,7 @@
 class player extends partisan{
     constructor(layer,x,y,type,direction){
         super(layer,x,y,type,24,72)
-        this.offset={position:{x:0,y:36}}
+        this.offset.position.y=39
         this.trigger.animate=false
         
         switch(this.type){
@@ -93,10 +93,9 @@ class player extends partisan{
     }
     display(){
         this.calculateParts()
+        //super.display()
         this.layer.translate(this.position.x+this.offset.position.x,this.position.y+this.offset.position.y)
-        this.layer.fill(255)
-            this.layer.rect(0,-this.offset.position.y,this.width,this.height)
-            this.layer.scale(this.size)
+        this.layer.scale(this.size)
         if(this.fade>0&&this.size>0){
             switch(this.type){
                 case 0:

@@ -1,7 +1,7 @@
 class wall extends physical{
 	constructor(layer,x,y,type,width,height){
 		super(layer,x,y,type,width,height)
-		this.collide=[entities.players]
+		this.collide=[entities.enemies,entities.players]
         switch(this.type){
         }
 	}
