@@ -6,5 +6,5 @@ transition={trigger:false,anim:0,scene:stage.scene,zone:game.zone,mode:0}
 inputs={mouse:{x:0,y:0},rel:{x:0,y:0},keys:[[false,false,false,false],[false,false,false,false]]}
 entities={clouds:[],walls:[],enemies:[],players:[],particles:[]}
 collision={incident:{x:0,y:0},calculate:{x:0,y:0}}
-run={back:[],fore:[]}
+run={back:[],fore:[],info:[]}
 _=0

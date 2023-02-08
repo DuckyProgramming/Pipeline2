@@ -1,10 +1,13 @@
 class partisan extends physical{
-	constructor(layer,x,y,type,width,height){
+	constructor(layer,x,y,type,width,height,life){
 		super(layer,x,y,type,width,height)
+		this.life=life
 		this.trigger={physics:{resistance:true,gravity:true}}
-		this.offset={position:{x:0,y:36}}
+		this.offset={position:{x:0,y:0},life:{x:0,y:0}}
         this.timers=[0,0]
 		this.squish=[false,false,false,false]
+		this.base={life:this.life}
+		this.collect={life:this.life}
 		this.size=1
 		this.dead=false
 	}
@@ -15,6 +18,26 @@ class partisan extends physical{
         this.layer.rect(0,-this.offset.position.y,this.width,this.height)
 		this.layer.translate(-this.position.x-this.offset.position.x,-this.position.y-this.offset.position.y)
 	}
+	displayInfo(){
+		this.layer.translate(this.position.x+this.offset.life.x,this.position.y+this.offset.life.y)
+		this.layer.noStroke()
+		this.layer.fill(0,this.fade)
+		this.layer.rect(0,0,42,8,4)
+		this.layer.fill(150,this.fade)
+		this.layer.rect(0,0,40,6,3)
+		if(this.collect.life>=this.life){
+			this.layer.fill(240,0,0,this.fade)
+			this.layer.rect((max(0,this.collect.life)/this.base.life)*20-20,0,(max(0,this.collect.life)/this.base.life)*40,2+min((max(0,this.collect.life)/this.base.life)*90,4),3)
+			this.layer.fill(min(255,510-max(0,this.life)/this.base.life*510)-max(0,5-max(0,this.life)/this.base.life*30)*25,max(0,this.life)/this.base.life*510,0,this.fade)
+			this.layer.rect((max(0,this.life)/this.base.life)*20-20,0,(max(0,this.life)/this.base.life)*40,2+min((max(0,this.life)/this.base.life)*90,4),3)
+		}else if(this.collect.life<this.life){
+			this.layer.fill(240,0,0,this.fade)
+			this.layer.rect((max(0,this.life)/this.base.life)*20-20,0,(max(0,this.life)/this.base.life)*40,2+min((max(0,this.life)/this.base.life)*90,4),3)
+			this.layer.fill(min(255,510-max(0,this.collect.life)/this.base.life*510)-max(0,5-max(0,this.collect.life)/this.base.life*30)*25,max(0,this.collect.life)/this.base.life*510,0,this.fade)
+			this.layer.rect((max(0,this.collect.life)/this.base.life)*20-20,0,(max(0,this.collect.life)/this.base.life)*40,2+min((max(0,this.collect.life)/this.base.life)*90,4),3)
+		}
+		this.layer.translate(-this.position.x-this.offset.life.x,-this.position.y-this.offset.life.y)
+	}
 	update(){
 		super.update()
 		this.position.x=constrain(this.position.x,0,game.edge.x)
@@ -24,6 +47,7 @@ class partisan extends physical{
 			this.position.y=min(this.position.y,game.edge.y)
 		}
         this.anim.rate+=this.velocity.x
+		this.collect.life=this.collect.life*0.9+this.life*0.1
 		if(this.dead){
 			this.status=1
 		}

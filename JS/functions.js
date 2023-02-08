@@ -191,5 +191,5 @@ function generateWorld(layer,level){
 			}
 		}
 	}
-	run={back:[],fore:[entities.enemies,entities.players,entities.walls,entities.particles]}
+	run={back:[],fore:[entities.walls,entities.enemies,entities.players,entities.particles],info:[entities.enemies,entities.players]}
 }

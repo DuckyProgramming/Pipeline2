@@ -1,70 +1,25 @@
 class player extends partisan{
     constructor(layer,x,y,type,direction){
-        super(layer,x,y,type,24,72)
+        super(layer,x,y,type,24,72,100)
         this.offset.position.y=39
-        this.trigger.animate=false
-        
+        this.offset.life.y=-48
+        this.trigger.animate=true
         switch(this.type){
             case 0:
-                this.anim={direction:direction,
-                    eye:[0,0],
-                    legs:[
-                        {top:24,length:{top:10}},
-                        {top:24,length:{top:10}}
-                    ],arms:[
-                        {top:54,length:{top:10}},
-                        {top:54,length:{top:10}}
-                    ]}
-
-                this.fades={
-                    eye:[1,1],beak:{main:1,mouth:1,nostril:1},
-                    skin:{legs:1,arms:1,body:1,head:1},
-                }
-
-                this.spin={
-                    legs:[{top:-90},{top:90}],
-                    arms:[{top:-90},{top:90}],
-                    eye:[-18,18]}
-
-                this.color={
-                    eye:{back:[0,0,0]},beak:{main:[255,140,25],mouth:[0,0,0],nostril:[0,0,0]},
-                    skin:{head:[255,235,25],body:[255,225,15],legs:[255,210,0],arms:[255,215,5]},
-                }
-
-                this.parts={eyeLevel:-39,beakLevel:-32,
-                    legs:[
-                        {top:{x:3,y:-15},middle:{x:0,y:0}},
-                        {top:{x:3,y:-15},middle:{x:0,y:0}}
-                    ],arms:[
-                        {top:{x:3.5,y:-25},middle:{x:0,y:0}},
-                        {top:{x:3.5,y:-25},middle:{x:0,y:0}}
-                    ]}
-
-                this.graphics={
-                    legs:[
-                        {top:{x:0,y:0},middle:{x:0,y:0}},
-                        {top:{x:0,y:0},middle:{x:0,y:0}}
-                    ],arms:[
-                        {top:{x:0,y:0},middle:{x:0,y:0}},
-                        {top:{x:0,y:0},middle:{x:0,y:0}}
-                    ]}
-                
-                this.trigger.display={
-                    eye:[true,true],beak:{main:true,mouth:true,nostril:true},
-                    skin:{legs:true,arms:true,body:true,head:true},
-                }
-
+                this.anim={direction:direction,eye:[0,0],legs:[{top:24,length:{top:10}},{top:24,length:{top:10}}],arms:[{top:54,length:{top:10}},{top:54,length:{top:10}}]}
+                this.fades={eye:[1,1],beak:{main:1,mouth:1,nostril:1},skin:{legs:1,arms:1,body:1,head:1}}
+                this.spin={legs:[{top:-90},{top:90}],arms:[{top:-90},{top:90}],eye:[-18,18]}
+                this.color={eye:{back:[0,0,0]},beak:{main:[255,140,25],mouth:[0,0,0],nostril:[0,0,0]},skin:{head:[255,235,25],body:[255,225,15],legs:[255,210,0],arms:[255,215,5]}}
+                this.parts={eyeLevel:-39,beakLevel:-32,legs:[{top:{x:3,y:-15},middle:{x:0,y:0}},{top:{x:3,y:-15},middle:{x:0,y:0}}],arms:[{top:{x:3.5,y:-25},middle:{x:0,y:0}},{top:{x:3.5,y:-25},middle:{x:0,y:0}}]}
+                this.graphics={legs:[{top:{x:0,y:0},middle:{x:0,y:0}},{top:{x:0,y:0},middle:{x:0,y:0}}],arms:[{top:{x:0,y:0},middle:{x:0,y:0}},{top:{x:0,y:0},middle:{x:0,y:0}}]}
+                this.trigger.display={eye:[true,true],beak:{main:true,mouth:true,nostril:true},skin:{legs:true,arms:true,body:true,head:true},}
                 this.calc={int:[0,0,0,0]}
-
                 this.animSet={active:false,loop:0,flip:0}
-
                 this.goal={anim:{direction:this.anim.direction}}
             break
 
         }
-
         this.movement={speed:0.4,jump:12}
-        
         this.size=1.5
     }
     calculateParts(){
@@ -169,6 +124,9 @@ class player extends partisan{
         this.layer.scale(1/this.size)
         this.layer.translate(-this.position.x-this.offset.position.x,-this.position.y-this.offset.position.y)
     }
+    displayInfo(){
+        super.displayInfo()
+    }
     update(){
         super.update()
         switch(this.type){
@@ -206,10 +164,12 @@ class player extends partisan{
                 }else if(this.anim.direction<-180){
                     this.anim.direction+=360
                 }
-                this.spin.legs[0].top=-90+sin(this.animSet.loop*12)*60
-                this.spin.legs[1].top=90+sin(this.animSet.loop*12)*60
-                this.spin.arms[0].top=-90+sin(this.animSet.loop*12)*30
-                this.spin.arms[1].top=90+sin(this.animSet.loop*12)*30
+                if(this.trigger.animate){
+                    this.spin.legs[0].top=-90+sin(this.animSet.loop*12)*75
+                    this.spin.legs[1].top=90+sin(this.animSet.loop*12)*75
+                    this.spin.arms[0].top=-90+sin(this.animSet.loop*12)*60
+                    this.spin.arms[1].top=90+sin(this.animSet.loop*12)*60
+                }
                 if((inputs.keys[0][2]||inputs.keys[1][2])&&this.timers[0]>0){
                     this.timers[0]=0
                     this.velocity.y=-this.movement.jump
